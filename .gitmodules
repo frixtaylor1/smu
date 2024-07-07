@@ -1,0 +1,6 @@
+[submodule "smu-client"]
+	path = smu-client
+	url = git@github.com:frixtaylor1/smu-client.git
+[submodule "smu-api"]
+	path = smu-api
+	url = git@github.com:frixtaylor1/smu-api.git
