@@ -1,0 +1,30 @@
+version: '3'
+services:
+  api:
+    build:
+      context: .
+      dockerfile: builds/api/Dockerfile
+    volumes:
+      - "../../smu-api/:/var/www/html"
+    ports:
+      - 3000:80
+      - 443:443
+      
+  db:
+    image: mysql:latest
+    environment:
+      - MYSQL_DATABASE=smu
+      - MYSQL_USER=dev
+      - MYSQL_PASSWORD=123456
+      - MYSQL_ROOT_PASSWORD=123456
+    volumes:
+      - "../../dump:/docker-entrypoint-initdb.d"
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - 9001:80
+    environment:
+      - PMA_HOST=db
+      - PMA_PORT=3306
+
