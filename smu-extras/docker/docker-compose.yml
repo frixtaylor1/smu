@@ -2,16 +2,20 @@ version: '3'
 services:
   api:
     build:
-      context: .
-      dockerfile: builds/api/Dockerfile
+      context: ../../
+      dockerfile: ./smu-extras/docker/builds/api/Dockerfile
     volumes:
       - "../../smu-api/:/var/www/html"
     ports:
       - 3000:80
       - 443:443
+    env_file:
+      - ../../smu-api/.env
       
   db:
     image: mysql:latest
+    env_file:
+      - ../../smu-api/.env
     environment:
       - MYSQL_DATABASE=smu
       - MYSQL_USER=dev
@@ -27,4 +31,6 @@ services:
     environment:
       - PMA_HOST=db
       - PMA_PORT=3306
+    env_file:
+      - ../../smu-api/.env
 
