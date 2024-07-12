@@ -13,14 +13,9 @@ services:
       - ../../smu-api/.env
       
   db:
-    image: mysql:latest
+    image: mysql
     env_file:
       - ../../smu-api/.env
-    environment:
-      - MYSQL_DATABASE=smu
-      - MYSQL_USER=dev
-      - MYSQL_PASSWORD=123456
-      - MYSQL_ROOT_PASSWORD=123456
     volumes:
       - "../../dump:/docker-entrypoint-initdb.d"
 
@@ -33,4 +28,3 @@ services:
       - PMA_PORT=3306
     env_file:
       - ../../smu-api/.env
-
