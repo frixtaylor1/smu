@@ -1,23 +1,57 @@
-version: '3'
+version: '3.9'
 services:
-  api:
+  api1:
+    container_name: api1
     build:
       context: ../../
       dockerfile: ./smu-extras/docker/builds/api/Dockerfile
     volumes:
       - "../../smu-api/:/var/www/html"
-    ports:
-      - 3000:80
-      - 443:443
     env_file:
       - ../../smu-api/.env
-      
+    networks:
+      - app-network
+    ports:
+      - 8081:80
+
+  api2:
+    container_name: api2
+    build:
+      context: ../../
+      dockerfile: ./smu-extras/docker/builds/api/Dockerfile
+    volumes:
+      - "../../smu-api/:/var/www/html"
+    env_file:
+      - ../../smu-api/.env
+    networks:
+      - app-network
+    ports:
+      - 8082:80
+
+  load-balancer:
+    build:
+      context: ../../smu-extras/docker
+      dockerfile: ./builds/load-balancer/Dockerfile
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+    depends_on:
+      - api1
+      - api2
+    networks:
+      - app-network
+    volumes:
+      - ./logs:/usr/local/apache2/logs
+      - ./config/load-balancer.conf:/usr/local/apache2/conf/httpd.conf
+
   db:
     image: mysql
     env_file:
       - ../../smu-api/.env
     volumes:
       - "../../dump:/docker-entrypoint-initdb.d"
+    networks:
+      - app-network
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -28,3 +62,9 @@ services:
       - PMA_PORT=3306
     env_file:
       - ../../smu-api/.env
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
